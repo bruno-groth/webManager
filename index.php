@@ -1,4 +1,7 @@
 <?php
+
+use App\Controller\HomeController;
+
 require __DIR__ . '/vendor/autoload.php';
 ?>
 <!DOCTYPE html>
@@ -11,7 +14,8 @@ require __DIR__ . '/vendor/autoload.php';
 </head>
 
 <body>
-  <?php phpinfo() ?>
+
+  <?php echo (HomeController::getHome()); ?>
 </body>
 
 </html>

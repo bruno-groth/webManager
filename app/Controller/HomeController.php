@@ -5,7 +5,7 @@ namespace App\Controller;
 use \App\Utils\View;
 
 
-class HomeController
+class HomeController extends TemplateController
 {
 
   /**
@@ -15,6 +15,15 @@ class HomeController
    */
   public static function getHome(): string
   {
-    return View::render('home');
+    $data = [
+      'name' => 'Home',
+      'description' => 'WebManager empowers you to effortlessly handle user data with ease. Seamlessly manage user information, from adding new entries to updating and removing records. Experience a user-friendly interface that simplifies user administration for your web applications.'
+    ];
+
+    // home view
+    $content = View::render('home', $data);
+
+    // home view inside template
+    return parent::getTemplate('webManager - Home', $content);
   }
 }
