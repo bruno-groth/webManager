@@ -1,0 +1,8 @@
+{
+  "name": "brunogroth/webmanager",
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  }
+}

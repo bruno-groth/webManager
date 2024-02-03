@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  php-apache:
+    image: php:8.1-apache
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: webmanager_db
+      MYSQL_USER: webmanager_user
+      MYSQL_PASSWORD: webmanager_password
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
