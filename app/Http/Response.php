@@ -40,7 +40,7 @@ class Response
     }
   }
 
-  public function sendReponse(): mixed
+  public function sendResponse(): mixed
   {
     // ENVIA OS HEADERS PARA O BROWSER
     $this->sendHeaders();

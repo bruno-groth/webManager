@@ -1,24 +1,20 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
+define('URL', 'http://localhost/app');
 
 use App\Controller\HomeController;
 use App\Http\Request;
 use App\Http\Response;
+use App\Http\Router;
 
-$request = new Request();
+$router = new Router(URL);
 
-echo '<pre>';
-var_export($request);
-echo '</pre>';
+$router->get('/', [function () {
+  return new Response(200, HomeController::getHome());
+}]);
 
-$response = new Response(200, 'Criado com sucesso!');
-
-// $response->sendReponse();
-
-// echo '<pre>';
-// var_export($response);
-// echo '</pre>';
-
+$router->run();
+//$router->run()->sendResponse();
 
 ?>
 
