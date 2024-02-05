@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
+use App\Model\Entity\Organization;
 use \App\Utils\View;
-
 
 class HomeController extends TemplateController
 {
@@ -15,9 +15,13 @@ class HomeController extends TemplateController
    */
   public static function getHome(): string
   {
+
+    $organization = new Organization();
+
     $data = [
-      'name' => 'Home',
-      'description' => 'WebManager empowers you to effortlessly handle user data with ease. Seamlessly manage user information, from adding new entries to updating and removing records. Experience a user-friendly interface that simplifies user administration for your web applications.'
+      'name' => $organization->name,
+      'description' => $organization->description,
+      'site' => $organization->site
     ];
 
     // home view

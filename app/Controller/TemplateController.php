@@ -25,6 +25,7 @@ class TemplateController
   {
     return View::render('layout/footer');
   }
+
   /**
    * Retorna o conteúdo (view) do Template do projeto.
    * 

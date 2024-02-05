@@ -1,21 +1,25 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
 
 use App\Controller\HomeController;
+use App\Http\Request;
+use App\Http\Response;
 
-require __DIR__ . '/vendor/autoload.php';
+$request = new Request();
+
+echo '<pre>';
+var_export($request);
+echo '</pre>';
+
+$response = new Response(200, 'Criado com sucesso!');
+
+// $response->sendReponse();
+
+// echo '<pre>';
+// var_export($response);
+// echo '</pre>';
+
+
 ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebManager</title>
-</head>
-
-<body>
-
-  <?php echo (HomeController::getHome()); ?>
-</body>
-
-</html>
+<?php echo (HomeController::getHome()); ?>
