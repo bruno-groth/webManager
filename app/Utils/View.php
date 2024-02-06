@@ -3,8 +3,17 @@
 namespace App\Utils;
 
 class View
-
 {
+
+  private static array $vars = [];
+
+  /**
+   * Método que define as variáveis inicializadas com o sistema para todas as views.
+   */
+  public static function init(array $vars = [])
+  {
+    self::$vars = $vars;
+  }
 
   /**
    * Retorna o conteúdo .html de um arquivo View 
@@ -29,6 +38,8 @@ class View
   public static function render(string $view, array $vars = []): string
   {
     $contentView = self::getContentView($view);
+
+    $vars = array_merge(self::$vars, $vars);
 
     // método que substitui {{}} da $contentView pelo conteudo que bater com $vars[]
     foreach (array_keys($vars) as $key) {

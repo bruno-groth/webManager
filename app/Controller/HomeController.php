@@ -13,7 +13,7 @@ class HomeController extends TemplateController
    * 
    * @return string
    */
-  public static function getHome(): string
+  public static function index(): string
   {
 
     $organization = new Organization();

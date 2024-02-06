@@ -1,21 +1,15 @@
 <?php
+
+use App\Utils\View;
+
 require __DIR__ . '/vendor/autoload.php';
 define('URL', 'http://localhost/app');
 
-use App\Controller\HomeController;
-use App\Http\Request;
-use App\Http\Response;
+View::init([
+  'URL' => URL
+]);
+
 use App\Http\Router;
 
 $router = new Router(URL);
-
-$router->get('/', [function () {
-  return new Response(200, HomeController::getHome());
-}]);
-
-$router->run();
-//$router->run()->sendResponse();
-
-?>
-
-<?php echo (HomeController::getHome()); ?>
+include __DIR__ . '/routes/web.php';

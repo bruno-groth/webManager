@@ -5,6 +5,12 @@ namespace App\Http;
 use Closure;
 use Exception;
 
+/**
+ * Classe responsável pelo comportamento de rotas da aplicação.
+ * 
+ * Determina as rotas, cria novas rotas e responde com métodos de uma controller.
+ * A instância dessa classe deve ser única (TODO: Pattern Singleton).
+ */
 class Router
 {
   private string $url = '';
@@ -53,11 +59,35 @@ class Router
   }
 
   /**
-   * Define uma rota de GET
+   * Método utilizado para definir uma nova rota de GET
    */
   public function get(string $route, array $params = [])
   {
     return $this->addRoute('GET', $route, $params);
+  }
+
+  /**
+   * Método utilizado para definir uma nova rota de POST
+   */
+  public function post(string $route, array $params = [])
+  {
+    return $this->addRoute('POST', $route, $params);
+  }
+
+  /**
+   * Método utilizado para definir uma nova rota de PUT
+   */
+  public function put(string $route, array $params = [])
+  {
+    return $this->addRoute('PUT', $route, $params);
+  }
+
+  /**
+   * Método utilizado para definir uma nova rota de DELETE
+   */
+  public function delete(string $route, array $params = [])
+  {
+    return $this->addRoute('DELETE', $route, $params);
   }
 
   /**
@@ -88,36 +118,43 @@ class Router
 
     $httpMethod = $this->request->httpMethod;
 
-    /**
-
-     */
     foreach ($this->routes as $patternRoute => $methods) {
       // verifica se a URI do navegador bate com uma patternRoute existente
       if (preg_match($patternRoute, $uri)) {
-        if ($methods[$httpMethod]) {
+        if (isset($methods[$httpMethod])) {
           return $methods[$httpMethod];
         }
 
         throw new Exception("Método não permitido", 405);
       }
     }
+
     throw new Exception("URL não encontrada.", 404);
   }
 
   /**
    * Executa a rota atual
    */
-  public function run()
+  public function run(): Response
   {
     try {
 
       // obtém a rota atual
       $route = $this->getRoute();
 
+      // Validação - Não há método registrado para responder essa rota em $routes
+      if (!isset($route['controller'])) {
+        throw new Exception("A URL não pode ser processada", 500);
+      }
+
+      $args = [];
+
+      // retorna a execução do método
+      return call_user_func_array($route['controller'], $args);
+
       // echo '<pre>';
       // var_export($route);
       // echo '</pre>';
-      return $route;
     } catch (Exception $e) {
       return new Response($e->getCode(), $e->getMessage());
     }
