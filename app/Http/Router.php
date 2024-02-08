@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Services\RouterService;
 use Closure;
 use Exception;
 
@@ -24,12 +25,14 @@ class Router
    */
   private array $routes = [];
   private Request $request;
+  private RouterService $routerService;
 
   public function __construct(string $url)
   {
     $this->request = new Request();
     $this->url = $url;
     $this->setPrefix();
+    $this->routerService = new RouterService();
   }
 
   private function setPrefix(): void
@@ -52,7 +55,19 @@ class Router
       }
     }
 
-    // rota padrão com regex pra tratamento da rota (essencial para casos dinâmicos, ex: /user/1 | /user/2)
+    $params['variables'] = [];
+
+    $patternRegularVariable = '/{(.*?)}/';
+
+    if (preg_match_all($patternRegularVariable, $route, $matches)) {
+      $route = preg_replace($patternRegularVariable, '(.*?)', $route);
+      $params['variables'] = $matches[1];
+    }
+
+    // TODO: corrigir a função e passar a utilizar
+    // $this->routerService->getRouteParams($route);
+
+    // rota com padrão de regex aplicado para tratamento da rota (essencial para casos dinâmicos, ex: /user/1 | /user/2)
     $patternRoute = '/^' . str_replace('/', '\/', $route) . '$/';
 
     $this->routes[$patternRoute][$method] = $params;
@@ -63,6 +78,7 @@ class Router
    */
   public function get(string $route, array $params = [])
   {
+
     return $this->addRoute('GET', $route, $params);
   }
 
@@ -119,9 +135,17 @@ class Router
     $httpMethod = $this->request->httpMethod;
 
     foreach ($this->routes as $patternRoute => $methods) {
-      // verifica se a URI do navegador bate com uma patternRoute existente
-      if (preg_match($patternRoute, $uri)) {
+      if (preg_match($patternRoute, $uri, $matches)) {
+        // verifica se a URI do navegador bate com uma patternRoute existente
         if (isset($methods[$httpMethod])) {
+          unset($matches[0]);
+
+          // coloca o valor informado na rota na posição correta de acordo com o atributo esperado na escrita da rota 
+          // ex: em $routes há a rota /pagina/{idPagina}
+          // $methods[$httpMethod]['variables'] passa a ser um associativo da chave idPagina com o valor /pagina/<idPaginaValor>
+          $keys = $methods[$httpMethod]['variables'];
+          $methods[$httpMethod]['variables'] = array_combine($keys, $matches);
+          $methods[$httpMethod]['variables']['request'] = $this->request;
           return $methods[$httpMethod];
         }
 
@@ -151,10 +175,6 @@ class Router
 
       // retorna a execução do método
       return call_user_func_array($route['controller'], $args);
-
-      // echo '<pre>';
-      // var_export($route);
-      // echo '</pre>';
     } catch (Exception $e) {
       return new Response($e->getCode(), $e->getMessage());
     }
