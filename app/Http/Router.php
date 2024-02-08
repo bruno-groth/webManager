@@ -5,6 +5,7 @@ namespace App\Http;
 use App\Services\RouterService;
 use Closure;
 use Exception;
+use ReflectionFunction;
 
 /**
  * Classe responsável pelo comportamento de rotas da aplicação.
@@ -166,12 +167,17 @@ class Router
       // obtém a rota atual
       $route = $this->getRoute();
 
-      // Validação - Não há método registrado para responder essa rota em $routes
       if (!isset($route['controller'])) {
         throw new Exception("A URL não pode ser processada", 500);
       }
 
       $args = [];
+      $rf = new ReflectionFunction($route['controller']);
+      foreach ($rf->getParameters() as $parameter) {
+        $name = $parameter->getName();
+
+        $args[$name] = $route['variables'][$name] ?? '';
+      }
 
       // retorna a execução do método
       return call_user_func_array($route['controller'], $args);

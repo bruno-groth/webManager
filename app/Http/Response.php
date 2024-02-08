@@ -2,6 +2,9 @@
 
 namespace App\Http;
 
+/**
+ * Entidade que define o valor que será retornado para o cliente que fez a chamada.
+ */
 class Response
 {
 
