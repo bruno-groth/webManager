@@ -2,6 +2,7 @@
 
 use App\Controller\AboutController;
 use App\Controller\HomeController;
+use App\Controller\TimelineController;
 use App\Http\Response;
 
 
@@ -18,5 +19,14 @@ $router->get('/pagina/{idPagina}/{metodo}', [
     return new Response(200, 'Página: ' . $idPagina . ' Método: ' . $metodo);
   }
 ]);
+
+$router->get('/timeline', [function () {
+  return new Response(200, TimelineController::index());
+}]);
+
+$router->post('/timeline', [function ($request) {
+  return new Response(200, TimelineController::create($request));
+}]);
+
 
 $router->run()->sendResponse();
