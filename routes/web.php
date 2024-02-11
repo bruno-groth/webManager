@@ -25,7 +25,7 @@ $router->get('/timeline', [function () {
 }]);
 
 $router->post('/timeline', [function ($request) {
-  return new Response(200, TimelineController::create($request));
+  return new Response(200, TimelineController::createPost($request));
 }]);
 
 

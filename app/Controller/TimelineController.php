@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Http\Request;
+use App\Model\Entity\Post;
 use App\Utils\View;
 
 class TimelineController extends TemplateController
@@ -14,10 +15,20 @@ class TimelineController extends TemplateController
     return parent::getTemplate('webManager - Timeline', $content);
   }
 
-  public static function create(Request $request)
+  public static function createPost(Request $request)
   {
+
+    if (!isset($_POST['name']) && !isset($_POST['message'])) {
+      die;
+    }
+
+    $post = new Post;
+    $post->name = $_POST['name'];
+    $post->message = $_POST['message'];
+
+    Post::create($post);
+
     echo '<pre>';
-    var_export($request);
-    echo '</pre>';
+    var_dump($post);
   }
 }
