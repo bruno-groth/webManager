@@ -6,6 +6,7 @@ use App\Database\Database;
 
 class Post
 {
+  private int $id;
 
   public function __construct(
     private string $name = '',
@@ -37,15 +38,20 @@ class Post
   /**
    * Creates a new Post.
    */
-  public function create(Post $post)
+  public function create()
   {
+
     $this->created_at = date('Y-m-d H:i:s');
 
     $database = new Database('posts');
 
-    // Checking instance of database
-    echo '<pre>';
-    var_export($database);
-    echo '</pre>';
+    // executes the insert and saves the id into the post instance $this->id
+    $this->id = $database->insert(
+      [
+        'name' => $this->name,
+        'message' => $this->message,
+        'created_at' => $this->created_at
+      ]
+    );
   }
 }

@@ -26,9 +26,10 @@ class TimelineController extends TemplateController
     $post->name = $_POST['name'];
     $post->message = $_POST['message'];
 
-    Post::create($post);
+    $post->create();
 
     echo '<pre>';
-    var_dump($post);
+    var_export($post);
+    echo '</pre>';
   }
 }
