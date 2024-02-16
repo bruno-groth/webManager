@@ -78,4 +78,20 @@ class Database
 
     return $this->connection->lastInsertId();
   }
+
+  /**
+   * Retrieves data from table.
+   *
+   *  @return PDOStatement
+   */
+  public function select(string $where = null, string $order = null, string $limit = null, $fields = '*'): PDOStatement
+  {
+    $where = isset($where) ? ' WHERE ' . $where : '';
+    $order = isset($order) ? ' ORDER BY ' . $order : '';
+    $limit = isset($limit) ? ' LIMIT ' . $limit : '';
+
+    $query = 'SELECT ' . $fields . ' FROM ' . $this->table . $where . $order . $limit;
+
+    return $this->execute($query);
+  }
 }

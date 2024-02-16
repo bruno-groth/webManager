@@ -10,12 +10,16 @@ class TimelineController extends TemplateController
 {
   public static function index()
   {
-    $content = View::render('timeline');
+    $posts = Post::getPosts();
+
+    $content = View::render('timeline', [
+      'posts' => self::getPostItems()
+    ]);
 
     return parent::getTemplate('webManager - Timeline', $content);
   }
 
-  public static function createPost(Request $request)
+  public static function createPost(Request $request): bool
   {
 
     if (!isset($_POST['name']) && !isset($_POST['message'])) {
@@ -28,8 +32,23 @@ class TimelineController extends TemplateController
 
     $post->create();
 
-    echo '<pre>';
-    var_export($post);
-    echo '</pre>';
+    // TODO: fazer o apache aceitar querystring sem dar 404
+    header('location: /app/timeline?status=success');
+    exit;
+
+    return true;
+  }
+
+  private static function getPostItems()
+  {
+    $items = '';
+
+    $results = Post::getPosts(null, 'id DESC');
+
+    foreach ($results as $post) {
+      // TODO: Criar componente com esses dados
+      $items .= $post->name . $post->message;
+    }
+    return $items;
   }
 }

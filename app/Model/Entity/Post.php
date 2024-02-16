@@ -3,17 +3,15 @@
 namespace App\Model\Entity;
 
 use App\Database\Database;
+use PDO;
+use PDOStatement;
 
 class Post
 {
   private int $id;
-
-  public function __construct(
-    private string $name = '',
-    private string $message = '',
-    private string $created_at = ''
-  ) {
-  }
+  private string $name = '';
+  private string $message = '';
+  private string $created_at = '';
 
   /**
    * Magic Method Auto getter
@@ -40,7 +38,6 @@ class Post
    */
   public function create()
   {
-
     $this->created_at = date('Y-m-d H:i:s');
 
     $database = new Database('posts');
@@ -53,5 +50,15 @@ class Post
         'created_at' => $this->created_at
       ]
     );
+  }
+
+  /**
+   * Retrieves Posts according to "where"
+   */
+  public static function getPosts(string $where = null, string $order = null, string $limit = null): array
+  {
+    $posts = (new Database('posts'))->select($where, $order, $limit)->fetchAll(PDO::FETCH_CLASS, Post::class);
+
+    return $posts;
   }
 }
