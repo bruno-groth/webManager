@@ -8,12 +8,22 @@ use App\Utils\View;
 
 class TimelineController extends TemplateController
 {
-  public static function index()
+  public static function index(Request $request)
   {
-    $posts = Post::getPosts();
+    // TODO: REFACTOR. $request não está funcionando. Parar de usar queryparams e usar o objeto da request.
+    $perPage = /* TODO: $request->perPage ?? */ 10;
+    $page = $_GET['page'] ?? 1;
 
-    $content = View::render('timeline', [
-      'posts' => self::getPostItems()
+    $posts = self::getPostItems(perPage: $perPage, page: $page);
+    // $postsCounter = Post::getPostsCounter();
+    $paginate = View::render('timeline/paginate', [
+      'next' => $page + 1,
+      'previous' => $page == 1 ?: $page - 1
+    ]);
+
+    $content = View::render('timeline/index', [
+      'posts' => $posts,
+      'paginate' => $paginate
     ]);
 
     return parent::getTemplate('webManager - Timeline', $content);
@@ -39,15 +49,20 @@ class TimelineController extends TemplateController
     return true;
   }
 
-  private static function getPostItems()
+  private static function getPostItems(int $perPage = 10,  int $page = 1)
   {
     $items = '';
+    $perPage = ($page == 0) ? 999999 : $perPage;
+    $offset = ($page * $perPage) - $perPage;
 
-    $results = Post::getPosts(null, 'id DESC');
+    $posts = Post::getPosts(order: 'id DESC', limit: "$perPage offset $offset");
 
-    foreach ($results as $post) {
-      // TODO: Criar componente com esses dados
-      $items .= $post->name . $post->message;
+    foreach ($posts as $post) {
+      $items .= View::render('timeline/timelineItem', [
+        'name' => $post->name,
+        'message' => $post->message,
+        'created_at' => date_format(date_create($post->created_at), 'd/m/Y - H:i:s'),
+      ]);
     }
     return $items;
   }

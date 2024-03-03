@@ -1,0 +1,32 @@
+<div class="pagination">
+  <a href="/app/timeline?page={{ previous }}">&laquo;</a>
+  <!-- TODO
+  <a href="#">1</a>
+  <a class="active" href="#">2</a>
+  <a href="#">3</a>
+  <a href="#">4</a>
+  <a href="#">5</a>
+  <a href="#">6</a> -->
+  <a href="/app/timeline?page={{ next }}">&raquo;</a>
+</div>
+<style>
+  .pagination {
+    display: inline-block;
+  }
+  
+  .pagination a {
+    background-color: #018534;
+    color: white;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    margin-right: 1rem;
+  }
+  
+  .pagination a.active {
+    background-color: #018534;
+    color: white;
+  }
+  
+  .pagination a:hover:not(.active) {background-color: #303030;}
+  </style>

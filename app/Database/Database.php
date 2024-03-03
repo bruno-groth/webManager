@@ -45,7 +45,7 @@ class Database
    * Responsible for executing the sql query.
    * Replaces '?', '?', into actual values before doing.
    */
-  public function execute(string $query, array $params = []): PDOStatement
+  public function executeQuery(string $query, array $params = []): PDOStatement
   {
     try {
 
@@ -74,7 +74,7 @@ class Database
 
     $query = 'INSERT INTO ' . $this->table . ' (' . implode(',', $fields) . ') VALUES (' . implode(',', $binds) . ')';
 
-    $this->execute($query, array_values($values));
+    $this->executeQuery($query, array_values($values));
 
     return $this->connection->lastInsertId();
   }
@@ -84,14 +84,15 @@ class Database
    *
    *  @return PDOStatement
    */
-  public function select(string $where = null, string $order = null, string $limit = null, $fields = '*'): PDOStatement
+  public function select(string $where = null, string $order = null, string $limit = null, $fields = '*', bool $count = false): PDOStatement
   {
     $where = isset($where) ? ' WHERE ' . $where : '';
     $order = isset($order) ? ' ORDER BY ' . $order : '';
     $limit = isset($limit) ? ' LIMIT ' . $limit : '';
+    $fields = $count ? ' COUNT(' . $fields . ')' : $fields;
 
     $query = 'SELECT ' . $fields . ' FROM ' . $this->table . $where . $order . $limit;
 
-    return $this->execute($query);
+    return $this->executeQuery($query);
   }
 }
