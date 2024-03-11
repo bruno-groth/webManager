@@ -20,8 +20,8 @@ $router->get('/pagina/{idPagina}/{metodo}', [
   }
 ]);
 
-$router->get('/timeline', [function () {
-  return new Response(200, TimelineController::index());
+$router->get('/timeline', [function ($request) {
+  return new Response(200, TimelineController::index($request));
 }]);
 
 $router->post('/timeline', [function ($request) {

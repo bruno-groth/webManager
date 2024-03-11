@@ -10,15 +10,16 @@ class TimelineController extends TemplateController
 {
   public static function index(Request $request)
   {
-    // TODO: REFACTOR. $request não está funcionando. Parar de usar queryparams e usar o objeto da request.
-    $perPage = /* TODO: $request->perPage ?? */ 10;
-    $page = $_GET['page'] ?? 1;
+    $perPage = $request->queryparams['perPage'] ?? 10;
+    $page = $request->queryparams['page'] ?? 1;
 
     $posts = self::getPostItems(perPage: $perPage, page: $page);
     // $postsCounter = Post::getPostsCounter();
+
     $paginate = View::render('timeline/paginate', [
       'next' => $page + 1,
-      'previous' => $page == 1 ?: $page - 1
+      'previous' => $page == 1 ? $page : $page - 1,
+      //'totalPages' => $totalPages
     ]);
 
     $content = View::render('timeline/index', [
@@ -32,17 +33,20 @@ class TimelineController extends TemplateController
   public static function createPost(Request $request): bool
   {
 
-    if (!isset($_POST['name']) && !isset($_POST['message'])) {
-      die;
+    if (!isset($request->postVars['name']) || !isset($request->postVars['message'])) {
+      // TODO: Tela de erro 500
+      // Migrar pra um try catch disparando uma exception
+      header(':', true, 500);
+      return 'Internal Server Error. Please try again.';
+      exit;
     }
 
     $post = new Post;
-    $post->name = $_POST['name'];
-    $post->message = $_POST['message'];
+    $post->name = $request->postVars['name'];
+    $post->message = $request->postVars['message'];
 
     $post->create();
 
-    // TODO: fazer o apache aceitar querystring sem dar 404
     header('location: /app/timeline?status=success');
     exit;
 

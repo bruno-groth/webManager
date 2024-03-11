@@ -61,4 +61,16 @@ class Post
 
     return $posts;
   }
+
+  /**
+   * TODO
+   * Retrieves the number of posts.
+   * Mostly used for pagination purposes.
+   */
+  public static function getPostsCounter(string $where = null, string $order = null, string $limit = null, string $fields = '*'): int
+  {
+    $counter = (new Database('posts'))->select($where, $order, $limit, $fields, true)->fetch();
+
+    return $counter[0];
+  }
 }
