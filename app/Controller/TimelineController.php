@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Database\Pagination;
 use App\Http\Request;
 use App\Model\Entity\Post;
 use App\Utils\View;
@@ -14,7 +15,11 @@ class TimelineController extends TemplateController
     $page = $request->queryparams['page'] ?? 1;
 
     $posts = self::getPostItems(perPage: $perPage, page: $page);
-    // $postsCounter = Post::getPostsCounter();
+    $postsCounter = Post::getPostsCounter();
+
+    $pagination = new Pagination($postsCounter, $perPage, $page);
+
+    $paginator = $pagination->getPages();
 
     $paginate = View::render('timeline/paginate', [
       'next' => $page + 1,

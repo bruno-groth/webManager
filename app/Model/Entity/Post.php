@@ -63,14 +63,13 @@ class Post
   }
 
   /**
-   * TODO
    * Retrieves the number of posts.
    * Mostly used for pagination purposes.
+   * 
+   * @return integer number of itens in table
    */
-  public static function getPostsCounter(string $where = null, string $order = null, string $limit = null, string $fields = '*'): int
+  public static function getPostsCounter(string $where = null, string $limit = null, string $fields = '*'): int
   {
-    $counter = (new Database('posts'))->select($where, $order, $limit, $fields, true)->fetch();
-
-    return $counter[0];
+    return (new Database('posts'))->select($where, null, $limit, 'COUNT(*) as qtd')->fetchObject()->qtd;
   }
 }

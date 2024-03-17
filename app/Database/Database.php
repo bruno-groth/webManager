@@ -84,12 +84,11 @@ class Database
    *
    *  @return PDOStatement
    */
-  public function select(string $where = null, string $order = null, string $limit = null, $fields = '*', bool $count = false): PDOStatement
+  public function select(string $where = null, string $order = null, string $limit = null, $fields = '*'): PDOStatement
   {
     $where = isset($where) ? ' WHERE ' . $where : '';
     $order = isset($order) ? ' ORDER BY ' . $order : '';
     $limit = isset($limit) ? ' LIMIT ' . $limit : '';
-    $fields = $count ? ' COUNT(' . $fields . ')' : $fields;
 
     $query = 'SELECT ' . $fields . ' FROM ' . $this->table . $where . $order . $limit;
 
